@@ -2,19 +2,19 @@ import telebot
 import yt_dlp
 import os
 
-# التوكن الخاص بك من BotFather
+# Your Bot Token
 BOT_TOKEN = '7548231015:AAH6vW8pYv9_6nS6fNId8N-x66_S5u5Yj-o'
 bot = telebot.TeleBot(BOT_TOKEN)
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "أهلاً بك! أرسل لي رابط فيديو من تيك توك أو يوتيوب وسأقوم بتحميله لك فوراً.")
+    bot.reply_to(message, "Welcome! Send me a link to download.")
 
 @bot.message_handler(func=lambda message: True)
 def download_video(message):
     url = message.text
     if "http" in url:
-        msg = bot.reply_to(message, "⏳ جاري التحميل، انتظر قليلاً...")
+        msg = bot.reply_to(message, "Wait... Downloading...")
         try:
             ydl_opts = {
                 'format': 'best',
@@ -30,8 +30,8 @@ def download_video(message):
             os.remove('video.mp4')
             bot.delete_message(message.chat.id, msg.message_id)
         except Exception as e:
-            bot.edit_message_text(f"❌ حدث خطأ: {str(e)}", message.chat.id, msg.message_id)
+            bot.edit_message_text("Error in download!", message.chat.id, msg.message_id)
     else:
-        bot.reply_to(message, "الرجاء إرسال رابط صحيح.")
+        bot.reply_to(message, "Please send a valid link.")
 
 bot.polling()
