@@ -2,37 +2,42 @@ import telebot
 import yt_dlp
 import os
 
-# Updated Token from your BotFather screenshot
-BOT_TOKEN = '8129938298:AAEC2a-d6baYFWnPTyrnKvcsCeYDKSmcNJK'
-bot = telebot.TeleBot(BOT_TOKEN)
+# التوكن الخاص بك الذي استخرجته من BotFather
+API_TOKEN = '8129938298:AAEC2a-d6baYFWnPTyrnKvcsCeYDKSmcNJk'
+bot = telebot.TeleBot(API_TOKEN)
 
 @bot.message_handler(commands=['start'])
-def send_welcome(message):
-    bot.reply_to(message, "Welcome! Send me a TikTok or YouTube link.")
+def start(message):
+    bot.reply_to(message, "أهلاً بك يا علي! أرسل لي أي رابط فيديو من تيك توك أو يوتيوب وسأقوم بتحميله لك فوراً 🚀")
 
 @bot.message_handler(func=lambda message: True)
 def download_video(message):
     url = message.text
     if "http" in url:
-        msg = bot.reply_to(message, "Downloading... Please wait.")
+        sent_msg = bot.reply_to(message, "⏳ جاري معالجة الرابط والتحميل... انتظر لحظة")
         try:
+            # إعدادات المكتبة للتحميل بأفضل جودة
             ydl_opts = {
-                'format': 'best',
                 'outtmpl': 'video.mp4',
-                'quiet': True
+                'format': 'best',
+                'quiet': True,
+                'no_warnings': True
             }
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
             
+            # إرسال الفيديو للمستخدم في تلجرام
             with open('video.mp4', 'rb') as video:
                 bot.send_video(message.chat.id, video)
             
+            # حذف الفيديو من السيرفر بعد الإرسال لتوفير المساحة
             os.remove('video.mp4')
-            bot.delete_message(message.chat.id, msg.message_id)
+            bot.delete_message(message.chat.id, sent_msg.message_id)
         except Exception as e:
-            bot.edit_message_text("Error in download!", message.chat.id, msg.message_id)
+            bot.edit_message_text(f"❌ عذراً، حدث خطأ أثناء التحميل. تأكد من صحة الرابط.", message.chat.id, sent_msg.message_id)
     else:
-        bot.reply_to(message, "Invalid link.")
+        bot.reply_to(message, "يرجى إرسال رابط فيديو صحيح يحتوي على http")
 
+# تشغيل البوت بشكل مستمر
 bot.polling()
 
