@@ -1,8 +1,8 @@
 import telebot
-from yt_dlp import YoutubeDL
+import yt_dlp
 import os
 
-# ضع التوكن الخاص بك هنا
+# التوكن الخاص بك من BotFather
 BOT_TOKEN = '7548231015:AAH6vW8pYv9_6nS6fNId8N-x66_S5u5Yj-o'
 bot = telebot.TeleBot(BOT_TOKEN)
 
@@ -21,7 +21,7 @@ def download_video(message):
                 'outtmpl': 'video.mp4',
                 'quiet': True
             }
-            with YoutubeDL(ydl_opts) as ydl:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
             
             with open('video.mp4', 'rb') as video:
@@ -35,5 +35,3 @@ def download_video(message):
         bot.reply_to(message, "الرجاء إرسال رابط صحيح.")
 
 bot.polling()
-
-
