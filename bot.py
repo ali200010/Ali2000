@@ -14,6 +14,7 @@ def run_flask():
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
 
+# Token from your latest screenshot with no spaces
 BOT_TOKEN = '8129938298:AAFNAOIVq9NUUtfU9EN3Zpwv4dJVdU-cP-Y'
 bot = telebot.TeleBot(BOT_TOKEN)
 
